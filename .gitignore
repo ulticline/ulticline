@@ -1,10 +1,23 @@
-out
-dist
-node_modules
-tmp
+# Build artifacts and output
+out/
+dist/
+tmp/
+
+# Node modules
+node_modules/
+
+# VS Code test folder
 .vscode-test/
+
+# VSIX packages
 *.vsix
 
+# OS-generated files
 .DS_Store
 
+# Lock file
 pnpm-lock.yaml
+
+# Ignore all compiled JS and source maps in 'src'
+src/**/*.js
+src/**/*.js.map
