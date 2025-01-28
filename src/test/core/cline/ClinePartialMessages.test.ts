@@ -30,7 +30,10 @@ describe("Cline - Partial Messages (ask/say) Tests", () => {
 
   beforeEach(() => {
     provider = new MockClineProvider()
-    apiConfig = { provider: "mock", model: "mock-model" }
+    apiConfig = { 
+      apiProvider: "anthropic",  // Changed from "mock" to a valid ApiProvider value
+      apiModelId: "mock-model"
+    }
     autoApprovalSettings = {
       enabled: false,
       maxRequests: 10,
@@ -43,7 +46,13 @@ describe("Cline - Partial Messages (ask/say) Tests", () => {
       },
       enableNotifications: false
     }
-    browserSettings = { headless: true, devtools: false }
+    browserSettings = { 
+      headless: true,
+      viewport: {  // Added required viewport settings
+        width: 1280,
+        height: 720
+      }
+    }
     chatSettings = { mode: "act" }
     stubbedHistoryItem = {
       id: "partial-test-1",
@@ -94,7 +103,7 @@ describe("Cline - Partial Messages (ask/say) Tests", () => {
       // We expect that the first partial call actually creates a new message
       await cline.ask(partialType, "Partial chunk #1", true)
       // Because it's partial, it should throw an error: "Current ask promise was ignored"
-      // to indicate we haven't completed it yet. That’s normal for partial usage flows.
+      // to indicate we haven't completed it yet. That's normal for partial usage flows.
     } catch (e) {
       errorCaught = true
       expect(e.message).to.include("ignored")

@@ -33,7 +33,10 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
 
   beforeEach(() => {
     provider = new MockClineProvider()
-    apiConfig = { provider: "mock", model: "mock-model" }
+    apiConfig = { 
+      apiProvider: "anthropic",  // Changed from "mock" to a valid ApiProvider value
+      apiModelId: "mock-model"
+    }
     autoApprovalSettings = {
       enabled: false,
       maxRequests: 5,
@@ -48,7 +51,11 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     }
     browserSettings = {
       headless: true,
-      devtools: false
+      viewport: {  // Added required viewport settings
+        width: 1280,
+        height: 720
+      }
+      // Removed devtools as it's not in the interface
     }
     chatSettings = {
       mode: "act"
@@ -114,7 +121,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     ]
 
     sinon.stub(provider, "getSavedClineMessages").resolves(savedMessages)
-    sinon.stub(provider, "getSavedApiConversationHistory").resolves(savedApiHistory)
+    sinon.stub(provider as any, "getSavedApiConversationHistory").resolves(savedApiHistory)
 
     // Construct cline with a historyItem => triggers resume logic
     const cline = new Cline(
@@ -162,7 +169,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
       }
     ]
     sinon.stub(provider, "getSavedClineMessages").resolves(savedMessages)
-    sinon.stub(provider, "getSavedApiConversationHistory").resolves([])
+    sinon.stub(provider as any, "getSavedApiConversationHistory").resolves([])
 
     const cline = new Cline(
       provider as any,
@@ -187,7 +194,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
   it("should handle empty saved messages by throwing error or defaulting to a new task", async () => {
     // Suppose no messages in storage for that history
     sinon.stub(provider, "getSavedClineMessages").resolves([])
-    sinon.stub(provider, "getSavedApiConversationHistory").resolves([])
+    sinon.stub(provider as any, "getSavedApiConversationHistory").resolves([])
 
     // In practice, your code might handle an empty set differently
     // For example, it might throw an error, or just treat it as a new task
@@ -230,7 +237,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     ]
 
     sinon.stub(provider, "getSavedClineMessages").resolves(savedMessages)
-    sinon.stub(provider, "getSavedApiConversationHistory").resolves(savedApiHistory)
+    sinon.stub(provider as any, "getSavedApiConversationHistory").resolves(savedApiHistory)
 
     const cline = new Cline(
       provider as any,

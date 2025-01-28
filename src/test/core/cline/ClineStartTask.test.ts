@@ -31,10 +31,10 @@ describe("Cline - startTask() Tests", () => {
   let chatSettings: ChatSettings
 
   beforeEach(() => {
-    // Set up default mocks, spies, or stubs here
     provider = new MockClineProvider()
     apiConfig = {
-      model: "mock-model"
+      apiProvider: "anthropic",
+      apiModelId: "mock-model"
     }
     autoApprovalSettings = {
       enabled: false,
@@ -50,16 +50,21 @@ describe("Cline - startTask() Tests", () => {
     }
     browserSettings = {
       headless: true,
-      devtools: false
+      viewport: {
+        width: 1280,
+        height: 720
+      }
     }
-    chatSettings = {
-      mode: "act"
+    chatSettings = { mode: "act" } as ChatSettings
+
+    (provider as any).postStateToWebviewCalled = false
+
+    provider.getSavedClineMessages = async () => {
+      return []
     }
 
-    // Stub or spy the classes that Cline internally instantiates
     sinon.stub(provider, "context").value({} as any) // if provider.context is needed
 
-    // If your project uses a container or DI approach, you might do so differently here:
     sinon.stub(provider, "createApiHandler").callsFake(() => new MockApiHandler())
     sinon.stub(provider, "createTerminalManager").callsFake(() => new MockTerminalManager())
     sinon.stub(provider, "createBrowserSession").callsFake(() => new MockBrowserSession())

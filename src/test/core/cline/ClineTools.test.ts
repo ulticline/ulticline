@@ -21,8 +21,8 @@ import { MockTerminalManager } from "./mocks/MockTerminalManager"
 import { MockBrowserSession } from "./mocks/MockBrowserSession"
 import { MockUrlContentFetcher } from "./mocks/MockUrlContentFetcher"
 import { HistoryItem } from "../../../shared/HistoryItem"
-import { ClineAskResponse, ClineMessage } from "../../../shared/WebviewMessage"
-import { ClineAsk, ClineSay } from "../../../shared/ExtensionMessage"
+import { ClineAskResponse, WebviewMessage } from "../../../shared/WebviewMessage"
+import { ClineAsk, ClineSay, ClineMessage } from "../../../shared/ExtensionMessage"
 
 describe("Cline - Tools Usage Tests", () => {
   let provider: MockClineProvider
@@ -34,20 +34,29 @@ describe("Cline - Tools Usage Tests", () => {
 
   beforeEach(() => {
     provider = new MockClineProvider()
-    apiConfig = { provider: "mock", model: "mock-model" }
+    apiConfig = { 
+      apiProvider: "anthropic",
+      apiModelId: "mock-model"
+    }
     autoApprovalSettings = {
-      enabled: false,
-      maxRequests: 5,
+      enabled: true,
+      maxRequests: 3,
       actions: {
-        readFiles: false,
-        editFiles: false,
-        executeCommands: false,
+        executeCommands: true,
+        readFiles: true,
+        editFiles: true,
         useBrowser: false,
         useMcp: false
       },
       enableNotifications: false
     }
-    browserSettings = { headless: true, devtools: false }
+    browserSettings = { 
+      headless: true,
+      viewport: {
+        width: 1280,
+        height: 720
+      }
+    }
     chatSettings = { mode: "act" }
     stubbedHistoryItem = {
       id: "tools-tests-1",
@@ -94,7 +103,7 @@ describe("Cline - Tools Usage Tests", () => {
 
     // 3. Pretend the LLM tries to execute a command => call a "tool_use" block
     // from the "assistant message" perspective, but black-box we do an "ask"
-    // that includes "execute_command" data. We’ll do partial = false, 
+    // that includes "execute_command" data. We'll do partial = false, 
     // so it tries to finalize the tool usage right away.
 
     // We'll simulate the "tool" ask from the assistant:
@@ -109,7 +118,7 @@ describe("Cline - Tools Usage Tests", () => {
     // We'll stub handleWebviewAskResponse to pretend user clicks "yesButtonClicked"
     // (User approves the tool usage)
     sinon.stub(cline, "handleWebviewAskResponse").callsFake(
-      (resp: ClineAskResponse, text?: string, images?: string[]) => {
+      async (resp: ClineAskResponse, text?: string, images?: string[]): Promise<void> => {
         // force it to set the askResponse 
         ;(cline as any).askResponse = resp
         ;(cline as any).askResponseText = text
@@ -156,7 +165,7 @@ describe("Cline - Tools Usage Tests", () => {
 
     // 2. Stub handleWebviewAskResponse to simulate user clicked "messageResponse" / no
     sinon.stub(cline, "handleWebviewAskResponse").callsFake(
-      (resp: ClineAskResponse, text?: string, images?: string[]) => {
+      async (resp: ClineAskResponse, text?: string, images?: string[]): Promise<void> => {
         // For a user rejection, we might do:
         if (resp === "messageResponse") {
           ;(cline as any).askResponse = resp
@@ -208,10 +217,16 @@ describe("Cline - Tools Usage Tests", () => {
 
     // 2. Stub handleWebviewAskResponse in case something tries to prompt the user
     sinon.stub(cline, "handleWebviewAskResponse").callsFake(
-      (resp: ClineAskResponse, text?: string, images?: string[]) => {
-        (cline as any).askResponse = resp
-        (cline as any).askResponseText = text
-        (cline as any).askResponseImages = images
+      async (resp: ClineAskResponse, text?: string | undefined, images?: string[] | undefined): Promise<void> => {
+        // Cast resp to string to avoid callable type error
+        ;(cline as any).askResponse = String(resp);
+        // Only set text and images if they are defined
+        if (text !== undefined) {
+          ;(cline as any).askResponseText = String(text);
+        }
+        if (images !== undefined) {
+          ;(cline as any).askResponseImages = [...images];
+        }
       }
     )
 
@@ -254,10 +269,16 @@ describe("Cline - Tools Usage Tests", () => {
     )
 
     sinon.stub(cline, "handleWebviewAskResponse").callsFake(
-      (resp: ClineAskResponse, text?: string, images?: string[]) => {
-        (cline as any).askResponse = resp
-        (cline as any).askResponseText = text
-        (cline as any).askResponseImages = images
+      async (resp: ClineAskResponse, text?: string | undefined, images?: string[] | undefined): Promise<void> => {
+        // Cast resp to string to avoid callable type error
+        ;(cline as any).askResponse = String(resp);
+        // Only set text and images if they are defined
+        if (text !== undefined) {
+          ;(cline as any).askResponseText = String(text);
+        }
+        if (images !== undefined) {
+          ;(cline as any).askResponseImages = [...images];
+        }
       }
     )
 
@@ -297,7 +318,7 @@ describe("Cline - Tools Usage Tests", () => {
       false
     )
 
-    // Check it’s now not partial
+    // Check it's now not partial
     lastMsg = cline.clineMessages[cline.clineMessages.length - 1]
     expect(lastMsg.partial).to.equal(false)
     expect(lastMsg.text).to.include("replace_in_file")
@@ -336,7 +357,7 @@ describe("Cline - Tools Usage Tests", () => {
 
     // stub user always says "yesButtonClicked" to reset count if asked
     sinon.stub(cline, "handleWebviewAskResponse").callsFake(
-      (resp: ClineAskResponse) => {
+      async (resp: ClineAskResponse, text?: string, images?: string[]): Promise<void> => {
         (cline as any).askResponse = resp
       }
     )
@@ -363,7 +384,7 @@ describe("Cline - Tools Usage Tests", () => {
       }),
       false
     )
-    // => That’s the second auto-approval
+    // => That's the second auto-approval
 
     // 3. Third usage => auto-approval limit reached. 
     // The code should ask the user to reset or proceed
@@ -378,9 +399,10 @@ describe("Cline - Tools Usage Tests", () => {
     )
 
     // Check that there's a "auto_approval_max_req_reached" or something in clineMessages
-    // depending on how your code handles that scenario
     const maxReqMessage = cline.clineMessages.find(
-      (m: ClineMessage) => m.ask === "auto_approval_max_req_reached"
+      (m: ClineMessage) => 
+        m.type === "ask" && 
+        (m as any).ask === "auto_approval_max_req_reached"
     )
     expect(maxReqMessage).to.exist
     // Then we stubbed user says "yesButtonClicked" => the auto-approval count is reset

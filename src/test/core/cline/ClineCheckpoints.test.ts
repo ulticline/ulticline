@@ -37,7 +37,10 @@ describe("Cline - Checkpoints Tests", () => {
 
   beforeEach(() => {
     provider = new MockClineProvider()
-    apiConfig = { provider: "mock", model: "mock-model" }
+    apiConfig = { 
+      apiProvider: "anthropic",  // Changed from "mock" to a valid ApiProvider value
+      apiModelId: "mock-model"
+    }
     autoApprovalSettings = {
       enabled: false,
       maxRequests: 5,
@@ -50,7 +53,13 @@ describe("Cline - Checkpoints Tests", () => {
       },
       enableNotifications: false
     }
-    browserSettings = { headless: true, devtools: false }
+    browserSettings = { 
+      headless: true,
+      viewport: {  // Added required viewport settings
+        width: 1280,
+        height: 720
+      }
+    }
     chatSettings = { mode: "act" }
     mockHistoryItem = {
       id: "checkpoint-tests-1",
