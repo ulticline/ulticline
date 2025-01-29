@@ -6,8 +6,8 @@
 	// compiled to make them compatible with VS Code's test runner.
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-	  "module": "commonjs",
-	  "moduleResolution": "node",
+	  "module": "esnext",
+	  "moduleResolution": "bundler",
 	  "types": ["node", "mocha", "should", "vscode", "chai"],
 	  "typeRoots": ["./node_modules/@types", "./src/test/types"],
 	  "outDir": "out",
@@ -15,12 +15,13 @@
 	},
 	"include": [
 	  "src/**/*.test.ts",
-	  "src/types/**/*.d.ts"    // Include the declaration file(s)
+	  "src/types/**/*.d.ts",
+	  "src/core/**/*",
+	  "src/integrations/**/*",
+	  "src/shared/**/*"
 	],
 	"exclude": [
-	  "src/extension.ts",
-	  "src/core/**",
-	  "src/integrations/**",
-	  "src/test/**/*.js"
+	  "src/test/**/*.js",
+	  "node_modules"
 	]
   }

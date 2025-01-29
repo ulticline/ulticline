@@ -1,10 +1,14 @@
-import { readFile } from "fs/promises"
-import { describe, it, after } from "mocha"
-import path from "path"
-import "should"
-import * as vscode from "vscode"
+const fs = require("fs").promises;
+const path = require("path");
+const vscode = require("vscode");
+require("should");
 
-const packagePath = path.join(__dirname, "..", "..", "package.json")
+const packagePath = path.join(__dirname, "..", "..", "package.json");
+
+// Type for webview message
+interface WebviewMessage {
+    text: string;
+}
 
 describe("Cline Extension", () => {
 	after(() => {
@@ -12,7 +16,7 @@ describe("Cline Extension", () => {
 	})
 
 	it("should verify extension ID matches package.json", async () => {
-		const packageJSON = JSON.parse(await readFile(packagePath, "utf8"))
+		const packageJSON = JSON.parse(await fs.readFile(packagePath, "utf8"))
 		const id = packageJSON.publisher + "." + packageJSON.name
 		const clineExtensionApi = vscode.extensions.getExtension(id)
 
@@ -61,7 +65,11 @@ describe("Cline Extension", () => {
 
 		// Set up message handling
 		const messagePromise = new Promise<string>((resolve) => {
-			panel.webview.onDidReceiveMessage((message) => resolve(message.text), undefined)
+			panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
+				if (typeof message === 'object' && message !== null && 'text' in message) {
+					resolve(message.text as string);
+				}
+			}, undefined)
 		})
 
 		// Add message sending script
