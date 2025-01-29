@@ -1,10 +1,10 @@
 // MockBrowserSession.ts
-import { BrowserSession } from "../../../../services/browser/BrowserSession"
+import * as Extension from "../../../../../dist/extension.js"
 import { BrowserActionResult } from "../../../../shared/ExtensionMessage"
 
-export class MockBrowserSession extends BrowserSession {
+export class MockBrowserSession extends Extension.BrowserSession {
   constructor() {
-    super({} as any, {} as any) // pass empty or partial config
+    super({}, {})
   }
 
   override async launchBrowser(): Promise<void> {
@@ -16,22 +16,34 @@ export class MockBrowserSession extends BrowserSession {
   }
 
   override async click(coordinate: string): Promise<BrowserActionResult> {
-    return { logs: "Clicked at coordinate " + coordinate }
+    return { logs: "Clicked " + coordinate, screenshot: "data:image/png;base64,AAAA..." }
   }
 
   override async type(text: string): Promise<BrowserActionResult> {
-    return { logs: "Typed text: " + text }
+    return { logs: "Typed " + text, screenshot: "data:image/png;base64,AAAA..." }
   }
 
-  override async scrollDown(): Promise<BrowserActionResult> { 
-    return { logs: "Scrolled down" }
+  override async scrollDown(): Promise<BrowserActionResult> {
+    return { logs: "Scrolled down", screenshot: "data:image/png;base64,AAAA..." }
   }
 
   override async scrollUp(): Promise<BrowserActionResult> {
-    return { logs: "Scrolled up" }
+    return { logs: "Scrolled up", screenshot: "data:image/png;base64,AAAA..." }
   }
 
   override async closeBrowser(): Promise<BrowserActionResult> {
-    return { logs: "Browser closed" }
+    return { logs: "Browser closed", screenshot: "data:image/png;base64,AAAA..." }
+  }
+
+  override async goto(url: string): Promise<BrowserActionResult> {
+    return { logs: "Navigated to " + url, screenshot: "data:image/png;base64,AAAA..." }
+  }
+
+  override async getScreenshot(): Promise<string> {
+    return "data:image/png;base64,AAAA..."
+  }
+
+  override async getContent(): Promise<string> {
+    return "<html><body>Mock content</body></html>"
   }
 }

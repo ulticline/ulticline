@@ -1,25 +1,46 @@
 {
 	"compilerOptions": {
-		"esModuleInterop": true,
-		"experimentalDecorators": true,
-		"forceConsistentCasingInFileNames": true,
-		"isolatedModules": true,
-		"lib": ["es2022", "esnext.disposable", "DOM"],
-		"module": "esnext",
-		"moduleResolution": "Bundler",
-		"noFallthroughCasesInSwitch": true,
-		"noImplicitOverride": true,
-		"noImplicitReturns": true,
-		"noUnusedLocals": false,
-		"resolveJsonModule": true,
-		"rootDir": ".",
-		"skipLibCheck": true,
-		"sourceMap": true,
-		"strict": true,
-		"target": "es2022",
-		"useDefineForClassFields": true,
-		"useUnknownInCatchVariables": false
+	  "esModuleInterop": true,
+	  "experimentalDecorators": true,
+	  "forceConsistentCasingInFileNames": true,
+	  "isolatedModules": true,
+	  "lib": ["es2022", "esnext.disposable", "DOM"],
+	  "module": "esnext",
+	  "moduleResolution": "Bundler",
+	  "noFallthroughCasesInSwitch": true,
+	  "noImplicitOverride": true,
+	  "noImplicitReturns": true,
+	  "noUnusedLocals": false,
+	  "resolveJsonModule": true,
+	  "rootDir": "src",
+	  
+	  // **Change this from "out" to "dist"**
+	  "outDir": "dist",
+	  
+	  "skipLibCheck": true,
+	  "sourceMap": true,
+	  "strict": true,
+	  "target": "es2022",
+	  "useDefineForClassFields": true,
+	  "useUnknownInCatchVariables": false,
+	  "baseUrl": ".",
+	  "paths": {
+		"dist/*": ["dist/*"]
+	  },
+  
+	  // **Add these two lines:**
+	  "declaration": true,
+	  "declarationMap": true
 	},
-	"include": ["src/**/*", "scripts/**/*"],
-	"exclude": ["node_modules", ".vscode-test", "webview-ui"]
-}
+	"include": [
+	  "src/**/*",
+	  "scripts/**/*",
+	  "src/types/**/*.d.ts"
+	],
+	"exclude": [
+	  "node_modules",
+	  ".vscode-test",
+	  "webview-ui",
+	  "out"
+	]
+  }

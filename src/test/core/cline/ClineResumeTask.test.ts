@@ -10,7 +10,7 @@
 
 import { expect } from "chai"
 import sinon from "sinon"
-import { Cline } from "../../../core/Cline" // Adjust as needed
+import * as Extension from "../../../../dist/extension.js"
 import { MockClineProvider } from "./mocks/MockClineProvider"
 import { MockApiHandler } from "./mocks/MockApiHandler"
 import { MockTerminalManager } from "./mocks/MockTerminalManager"
@@ -124,7 +124,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     sinon.stub(provider as any, "getSavedApiConversationHistory").resolves(savedApiHistory)
 
     // Construct cline with a historyItem => triggers resume logic
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -171,7 +171,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     sinon.stub(provider, "getSavedClineMessages").resolves(savedMessages)
     sinon.stub(provider as any, "getSavedApiConversationHistory").resolves([])
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -199,7 +199,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     // In practice, your code might handle an empty set differently
     // For example, it might throw an error, or just treat it as a new task
     // Let's say we expect it to just proceed quietly:
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -239,7 +239,7 @@ describe("Cline - resumeTaskFromHistory() Tests", () => {
     sinon.stub(provider, "getSavedClineMessages").resolves(savedMessages)
     sinon.stub(provider as any, "getSavedApiConversationHistory").resolves(savedApiHistory)
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,

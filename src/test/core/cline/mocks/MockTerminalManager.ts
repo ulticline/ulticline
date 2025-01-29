@@ -1,17 +1,12 @@
 // MockTerminalManager.ts
-import { TerminalManager } from "../../../../integrations/terminal/TerminalManager"
 import { Terminal } from "vscode"
 import { TerminalInfo } from "../../../../integrations/terminal/TerminalRegistry"
 import { TerminalProcess, TerminalProcessResultPromise } from "../../../../integrations/terminal/TerminalProcess"
 
-// Since we can't find the base TerminalManager class, let's create a mock implementation
-export class MockTerminalManager extends TerminalManager {
-  constructor() {
-    super()
-  }
-
-  override async getOrCreateTerminal(cwd: string): Promise<TerminalInfo> {
-    // Return a fake terminal object with an ID and stubs for .show().
+// Since TerminalManager isn't exported from extension.js, we'll keep the direct import
+// but this is an implementation detail that doesn't affect the public API testing
+export class MockTerminalManager {
+  async getOrCreateTerminal(cwd: string): Promise<TerminalInfo> {
     return {
       id: 1,
       terminal: { show: () => {} } as unknown as Terminal,
@@ -20,8 +15,7 @@ export class MockTerminalManager extends TerminalManager {
     }
   }
 
-  override runCommand(terminalInfo: TerminalInfo, command: string): TerminalProcessResultPromise {
-    // Create a mock TerminalProcess with all required properties
+  runCommand(terminalInfo: TerminalInfo, command: string): TerminalProcessResultPromise {
     const mockProcess: TerminalProcess = {
       on: (eventName: string, cb: Function) => mockProcess,
       continue: () => {},
@@ -40,13 +34,11 @@ export class MockTerminalManager extends TerminalManager {
     return mockProcess as unknown as TerminalProcessResultPromise
   }
 
-  override getTerminals(isBusy: boolean): TerminalInfo[] {
-    // Return empty or some list of mock terminals
+  getTerminals(isBusy: boolean): TerminalInfo[] {
     return []
   }
 
-  override isProcessHot(terminalId: number): boolean {
-    // Return false or true depending on what you want to test
+  isProcessHot(terminalId: number): boolean {
     return false
   }
 }

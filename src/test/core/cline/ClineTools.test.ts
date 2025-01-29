@@ -10,7 +10,7 @@
 
 import { expect } from "chai"
 import sinon from "sinon"
-import { Cline } from "../../../core/Cline" // Adjust path as needed
+import * as Extension from "../../../../dist/extension.js"
 import { AutoApprovalSettings } from "../../../shared/AutoApprovalSettings"
 import { BrowserSettings } from "../../../shared/BrowserSettings"
 import { ChatSettings } from "../../../shared/ChatSettings"
@@ -89,7 +89,7 @@ describe("Cline - Tools Usage Tests", () => {
     autoApprovalSettings.actions.executeCommands = false
 
     // 2. Create new Cline
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -151,7 +151,7 @@ describe("Cline - Tools Usage Tests", () => {
     // 1. Turn off auto-approval
     autoApprovalSettings.actions.executeCommands = false
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -203,7 +203,7 @@ describe("Cline - Tools Usage Tests", () => {
     autoApprovalSettings.actions.readFiles = true
     autoApprovalSettings.maxRequests = 3
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -256,7 +256,7 @@ describe("Cline - Tools Usage Tests", () => {
     // We'll test that partial usage is recognized, then finalized
     autoApprovalSettings.actions.editFiles = true // So it auto-approves
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -343,7 +343,7 @@ describe("Cline - Tools Usage Tests", () => {
     autoApprovalSettings.actions.executeCommands = true
     autoApprovalSettings.maxRequests = 2 // e.g., only 2 auto-approvals before forcing user prompt
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,

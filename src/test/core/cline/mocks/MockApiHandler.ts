@@ -1,10 +1,10 @@
 // MockApiHandler.ts
-import { ApiHandler } from "../../../../api"
+import * as Extension from "../../../../../dist/extension.js"
 import { ApiStream } from "../../../../api/transform/stream"
 import { Anthropic } from "@anthropic-ai/sdk"
 import { ModelInfo } from "../../../../shared/api"
 
-export class MockApiHandler implements ApiHandler {
+export class MockApiHandler implements Extension.ApiHandler {
   // Add any properties or constructor args as needed
   private mockModelInfo = {
     id: "mock-model-123",

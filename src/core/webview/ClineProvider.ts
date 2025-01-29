@@ -3,7 +3,7 @@ import axios from "axios"
 import fs from "fs/promises"
 import os from "os"
 import crypto from "crypto"
-import { execa } from "execa"
+import execa from "execa"
 import pWaitFor from "p-wait-for"
 import * as path from "path"
 import * as vscode from "vscode"
@@ -1124,7 +1124,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 
 	async deleteTaskFromState(id: string) {
 		// Remove the task from history
-		const taskHistory = ((await this.getGlobalState("taskHistory")) as HistoryItem[] | undefined) || []
+		const taskHistory = ((await this.getGlobalState("taskHistory")) as HistoryItem[]) || []
 		const updatedTaskHistory = taskHistory.filter((task) => task.id !== id)
 		await this.updateGlobalState("taskHistory", updatedTaskHistory)
 

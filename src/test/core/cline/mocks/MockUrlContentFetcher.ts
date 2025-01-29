@@ -1,18 +1,11 @@
 // MockUrlContentFetcher.ts
-import { UrlContentFetcher } from "../../../../services/browser/UrlContentFetcher"
+// No need to extend from UrlContentFetcher since it's not exported from extension.js
+export class MockUrlContentFetcher {
+  constructor() {}
 
-export class MockUrlContentFetcher extends UrlContentFetcher {
-  constructor() {
-    // Pass empty object as config since we're mocking
-    super({} as any)
-  }
-
-  override async urlToMarkdown(url: string): Promise<string> {
-    // Mock implementation
+  async urlToMarkdown(url: string): Promise<string> {
     return `Mock content for ${url}`
   }
 
-  override async closeBrowser(): Promise<void> {
-    // Mock
-  }
+  async closeBrowser(): Promise<void> {}
 }

@@ -188,3 +188,9 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 	outputChannel.appendLine("Cline extension deactivated")
 }
+
+export { Cline } from "./core/Cline"
+export { ClineProvider } from "./core/webview/ClineProvider"
+export { BrowserSession } from "./services/browser/BrowserSession"
+export type { ApiHandler } from "./api"
+export { default as CheckpointTracker } from "./integrations/checkpoints/CheckpointTracker"

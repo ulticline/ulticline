@@ -13,7 +13,7 @@
 
 import { expect } from "chai"
 import sinon from "sinon"
-import { Cline } from "../../../core/Cline" // Adjust path as necessary
+import * as Extension from "../../../../dist/extension.js"
 import { AutoApprovalSettings } from "../../../shared/AutoApprovalSettings"
 import { BrowserSettings } from "../../../shared/BrowserSettings"
 import { ChatSettings } from "../../../shared/ChatSettings"
@@ -76,7 +76,7 @@ describe("Cline - Checkpoints Tests", () => {
     }
 
     // Stub out necessary provider calls
-    sinon.stub(provider, "context").value({} as any)
+    provider.context = {} as any
     sinon.stub(provider, "createApiHandler").callsFake(() => new MockApiHandler())
     sinon.stub(provider, "createTerminalManager").callsFake(() => new MockTerminalManager())
     sinon.stub(provider, "createBrowserSession").callsFake(() => new MockBrowserSession())
@@ -100,7 +100,7 @@ describe("Cline - Checkpoints Tests", () => {
 
   it("should restore checkpoint for 'task' only without restoring workspace", async () => {
     // Create a new Cline with a stubbed lastCheckpointHash in one of its messages
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -140,7 +140,7 @@ describe("Cline - Checkpoints Tests", () => {
   })
 
   it("should restore checkpoint for 'taskAndWorkspace' including resetHead", async () => {
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -174,7 +174,7 @@ describe("Cline - Checkpoints Tests", () => {
   it("should present multifile diff via presentMultifileDiff(...) and handle no changes found", async () => {
     // The mock getDiffSet above returns an empty array by default
     // so we'll verify that it gracefully handles "No changes found" scenario
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -228,7 +228,7 @@ describe("Cline - Checkpoints Tests", () => {
       return fakeTracker as any
     })
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -256,7 +256,7 @@ describe("Cline - Checkpoints Tests", () => {
   })
 
   it("should save a new checkpoint using saveCheckpoint()", async () => {
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,

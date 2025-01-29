@@ -11,7 +11,7 @@
 
 import { expect } from "chai"
 import sinon from "sinon"
-import { Cline } from "../../../core/Cline" // <-- Adjust path as needed
+import * as Extension from "../../../../dist/extension.js"
 import { MockClineProvider } from "./mocks/MockClineProvider"
 import { MockApiHandler } from "./mocks/MockApiHandler"
 import { MockTerminalManager } from "./mocks/MockTerminalManager"
@@ -80,16 +80,16 @@ describe("Cline - startTask() Tests", () => {
 
   it("should initialize a new task with a provided title", async () => {
     const taskTitle = "Implement a Hello World feature"
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
       browserSettings,
       chatSettings,
-      /* customInstructions? */ undefined,
-      /* task? */ taskTitle,
-      /* images? */ undefined,
-      /* historyItem? */ undefined
+      undefined,
+      taskTitle,
+      undefined,
+      undefined
     )
 
     // Check internal state
@@ -108,7 +108,7 @@ describe("Cline - startTask() Tests", () => {
   it("should initialize a new task with images", async () => {
     const taskTitle = "Add images to new task"
     const images = ["base64image1", "base64image2"]
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,
@@ -136,7 +136,7 @@ describe("Cline - startTask() Tests", () => {
   it("should throw if no task/title or images is provided without historyItem", () => {
     expect(() => {
       // Provide neither task nor images
-      new Cline(
+      new Extension.Cline(
         provider as any,
         apiConfig,
         autoApprovalSettings,
@@ -175,7 +175,7 @@ describe("Cline - startTask() Tests", () => {
       ]) as any
     )
 
-    const cline = new Cline(
+    const cline = new Extension.Cline(
       provider as any,
       apiConfig,
       autoApprovalSettings,

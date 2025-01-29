@@ -6,13 +6,21 @@
 	// compiled to make them compatible with VS Code's test runner.
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"types": ["node", "mocha", "should", "vscode", "chai"],
-		"typeRoots": ["./node_modules/@types", "./src/test/types"],
-		"outDir": "out",
-		"rootDir": "src"
+	  "module": "commonjs",
+	  "moduleResolution": "node",
+	  "types": ["node", "mocha", "should", "vscode", "chai"],
+	  "typeRoots": ["./node_modules/@types", "./src/test/types"],
+	  "outDir": "out",
+	  "rootDir": "src"
 	},
-	"include": ["src/**/*.test.ts"],
-	"exclude": ["src/test/**/*.js"]
-}
+	"include": [
+	  "src/**/*.test.ts",
+	  "src/types/**/*.d.ts"    // Include the declaration file(s)
+	],
+	"exclude": [
+	  "src/extension.ts",
+	  "src/core/**",
+	  "src/integrations/**",
+	  "src/test/**/*.js"
+	]
+  }

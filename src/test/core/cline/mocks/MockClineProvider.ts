@@ -1,5 +1,5 @@
 // MockClineProvider.ts
-import { ClineProvider } from "../../../../core/webview/ClineProvider"
+import * as Extension from "../../../../../dist/extension.js"
 import { MockApiHandler } from "./MockApiHandler"
 import { MockTerminalManager } from "./MockTerminalManager"
 import { MockBrowserSession } from "./MockBrowserSession"
@@ -8,8 +8,9 @@ import { HistoryItem } from "../../../../shared/HistoryItem"
 import { ExtensionMessage } from "../../../../shared/ExtensionMessage"
 import { Disposable, OutputChannel, window } from "vscode"
 
-export class MockClineProvider extends ClineProvider {
+export class MockClineProvider extends Extension.ClineProvider {
   public postStateToWebviewCalled: boolean = false
+  public override context: any
   
   constructor() {
     // Create a mock output channel
@@ -25,26 +26,26 @@ export class MockClineProvider extends ClineProvider {
     } as OutputChannel
 
     super({} as any, mockOutputChannel)
+    this.context = {}
   }
 
-  createApiHandler() {
+  override createApiHandler() {
     return new MockApiHandler()
   }
 
-  createTerminalManager() {
+  override createTerminalManager() {
     return new MockTerminalManager()
   }
 
-  createBrowserSession() {
+  override createBrowserSession() {
     return new MockBrowserSession()
   }
 
-  createUrlContentFetcher() {
+  override createUrlContentFetcher() {
     return new MockUrlContentFetcher()
   }
 
   override async updateTaskHistory(info: HistoryItem): Promise<HistoryItem[]> {
-    // store the updated info or do nothing
     return []
   }
 
@@ -56,11 +57,11 @@ export class MockClineProvider extends ClineProvider {
     // no-op or track calls
   }
 
-  async getSavedClineMessages(): Promise<any[]> {
+  override async getSavedClineMessages(): Promise<any[]> {
     return []
   }
 
-  async getSavedApiConversationHistory(): Promise<any[]> {
+  override async getSavedApiConversationHistory(): Promise<any[]> {
     return []
   }
 
