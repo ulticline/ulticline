@@ -1,33 +1,33 @@
 // MockDiffViewProvider.ts
-import { DiffViewProvider } from "../../../integrations/editor/DiffViewProvider"
+import { DiffViewProvider } from "../../../../integrations/editor/DiffViewProvider"
 
 export class MockDiffViewProvider extends DiffViewProvider {
-  public editType?: "create" | "modify"
-  public originalContent: string = "original content"
-  public isEditing: boolean = false
+  public override editType: "create" | "modify" = "modify"
+  public override originalContent: string = "original content"
+  public override isEditing: boolean = false
 
   constructor(cwd: string) {
     super(cwd)
   }
 
-  async open(relPath: string) {
+  public override async open(relPath: string) {
     this.isEditing = true
   }
 
-  async update(newContent: string, final?: boolean) {
+  public override async update(newContent: string, final?: boolean) {
     // store or track the updated content
   }
 
-  async revertChanges() {
+  public override async revertChanges() {
     this.isEditing = false
   }
 
-  async reset() {
+  public override async reset() {
     // reset state
     this.isEditing = false
   }
 
-  async saveChanges() {
+  public override async saveChanges() {
     // return a mock result
     return {
       newProblemsMessage: "",

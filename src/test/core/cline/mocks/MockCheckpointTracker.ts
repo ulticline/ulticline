@@ -1,15 +1,20 @@
 // MockCheckpointTracker.ts
-import CheckpointTracker from "../../../integrations/checkpoints/CheckpointTracker"
+import { ClineProvider } from "../../../../core/webview/ClineProvider"
 
-export class MockCheckpointTracker extends CheckpointTracker {
-  static async create(taskId: string, providerRef: any): Promise<MockCheckpointTracker> {
-    return new MockCheckpointTracker(taskId, providerRef)
+export class MockCheckpointTracker {
+  static async create(
+    taskId: string, 
+    provider: ClineProvider, 
+    cwd: string = process.cwd()
+  ): Promise<MockCheckpointTracker> {
+    return new MockCheckpointTracker(provider, taskId, cwd)
   }
 
-  constructor(taskId: string, providerRef: any) {
-    super()
-    // store internally if needed
-  }
+  constructor(
+    private provider: ClineProvider, 
+    private taskId: string, 
+    private cwd: string
+  ) {}
 
   async commit() {
     return "mock-commit-hash"
