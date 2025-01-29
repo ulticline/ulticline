@@ -19,7 +19,7 @@ import { ApiProvider, ModelInfo } from "../../shared/api"
 import { findLast } from "../../shared/array"
 import { ExtensionMessage, ExtensionState } from "../../shared/ExtensionMessage"
 import { HistoryItem } from "../../shared/HistoryItem"
-import { ClineCheckpointRestore, WebviewMessage } from "../../shared/WebviewMessage"
+import { ClineAskResponse, ClineCheckpointRestore, WebviewMessage } from "../../shared/WebviewMessage"
 import { fileExistsAtPath } from "../../utils/fs"
 import { Cline } from "../Cline"
 import { openMention } from "../mentions"
@@ -83,7 +83,9 @@ export const GlobalFileNames = {
 	clineRules: ".clinerules",
 }
 
-export class ClineProvider implements vscode.WebviewViewProvider {
+import { IClineProvider } from "./IClineProvider"
+
+export class ClineProvider implements vscode.WebviewViewProvider, IClineProvider {
 	public static readonly sideBarId = "claude-dev.SidebarProvider" // used in package.json as the view's id. This value cannot be changed due to how vscode caches views based on their id, and updating the id would break existing instances of the extension.
 	public static readonly tabPanelId = "claude-dev.TabPanelProvider"
 	private static activeInstances: Set<ClineProvider> = new Set()
@@ -94,6 +96,24 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 	mcpHub?: McpHub
 	private authManager: FirebaseAuthManager
 	private latestAnnouncementId = "jan-20-2025" // update to some unique identifier when we add a new announcement
+
+	async ask(type: string, text?: string, partial?: boolean): Promise<{
+		response: ClineAskResponse;
+		text?: string;
+		images?: string[];
+	}> {
+		if (!this.cline) {
+			throw new Error("No active task")
+		}
+		return await this.cline.ask(type as any, text, partial)
+	}
+
+	async say(type: string, text?: string, images?: string[]): Promise<void> {
+		if (!this.cline) {
+			throw new Error("No active task")
+		}
+		await this.cline.say(type as any, text, images)
+	}
 
 	constructor(
 		readonly context: vscode.ExtensionContext,

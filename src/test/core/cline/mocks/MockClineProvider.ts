@@ -6,11 +6,15 @@ import { MockBrowserSession } from "./MockBrowserSession"
 import { MockUrlContentFetcher } from "./MockUrlContentFetcher"
 import { HistoryItem } from "../../../../shared/HistoryItem"
 import { ExtensionMessage } from "../../../../shared/ExtensionMessage"
+import { ClineAskResponse } from "../../../../shared/WebviewMessage"
 import { Disposable, OutputChannel, window } from "vscode"
+import { IClineProvider } from "../../../../core/webview/IClineProvider"
 
-export class MockClineProvider extends Extension.ClineProvider {
+export class MockClineProvider extends Extension.ClineProvider implements IClineProvider {
   public postStateToWebviewCalled: boolean = false
   public override context: any
+  public askCalled: boolean = false
+  public sayCalled: boolean = false
   
   constructor() {
     // Create a mock output channel
@@ -67,5 +71,21 @@ export class MockClineProvider extends Extension.ClineProvider {
 
   override async postStateToWebview(): Promise<void> {
     this.postStateToWebviewCalled = true
+  }
+
+  async ask(type: string, text?: string, partial?: boolean): Promise<{
+    response: ClineAskResponse;
+    text?: string;
+    images?: string[];
+  }> {
+    this.askCalled = true
+    return {
+      response: "yesButtonClicked",
+      text: "Mock response"
+    }
+  }
+
+  async say(type: string, text?: string, images?: string[]): Promise<void> {
+    this.sayCalled = true
   }
 }
