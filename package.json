@@ -1,7 +1,6 @@
 {
 	"name": "claude-dev",
 	"displayName": "Cline",
-	"type": "module",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "3.2.5",
 	"icon": "assets/icons/icon.png",
@@ -164,11 +163,11 @@
 	"scripts": {
 		"clean": "rm -rf out dist",
 		"vscode:prepublish": "npm run package",
-		"compile": "npm run check-types && npm run lint && node esbuild.js",
+		"compile": "npm run check-types && npm run lint && node esbuild.mjs",
 		"watch": "npm-run-all -p watch:*",
-		"watch:esbuild": "node esbuild.js --watch",
+		"watch:esbuild": "node esbuild.mjs --watch",
 		"watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-		"package": "npm run build:webview && npm run check-types && npm run lint && node esbuild.js --production",
+		"package": "npm run build:webview && npm run check-types && npm run lint && node esbuild.mjs --production",
 		"compile-tests": "tsc -p ./tsconfig.test.json --outDir out",
 		"watch-tests": "tsc -p . -w --outDir out",
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
